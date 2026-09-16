@@ -51,10 +51,14 @@ Add to your `claude_desktop_config.json`:
 
 | Tool | Description |
 |---|---|
-| `send_sms` | Send an SMS or WhatsApp message to a Moroccan (+212) or international number. Accepts `to`, `message`, optional `from` (Sender ID), and `channel` (`sms` or `whatsapp`, defaults to `sms`). |
-| `send_otp` | Generate and send a managed OTP verification code. Accepts `to`, optional `brand` name shown in the message, and `channel`. |
+| `send_sms` | Send a text message to a Moroccan (+212) or international number. Accepts `to`, `message`, optional `from` (Sender ID), `channel` (defaults to `sms`) and `idempotency_key`. Every call carries an `Idempotency-Key`, so a retried tool call never sends or bills twice. |
+| `send_otp` | Generate and send a one-time verification code over SMS or WhatsApp through EnvoiSMS's shared sender — no WhatsApp connection needed. Accepts `to`, optional `brand`, and `channel`. |
 | `check_otp` | Validate a user-submitted code against a pending verification session. Accepts `session_id` and `code`. |
 | `get_balance` | Check real-time account balance in MAD and EUR. No arguments. |
+
+### SMS or WhatsApp?
+
+Leave `channel` on `sms` for any ordinary text — it needs no setup and reaches the recipient even when they use WhatsApp. `channel: "whatsapp"` on `send_sms` sends from the account's **own connected WhatsApp Business number**, and free text only reaches a contact who wrote to that number in the last 24 hours; otherwise the API answers `WHATSAPP_NOT_CONNECTED` / `OUT_OF_24H_WINDOW` and charges nothing. "Send a code on WhatsApp" is `send_otp` with `channel: "whatsapp"`.
 
 ## Why direct routes matter
 
